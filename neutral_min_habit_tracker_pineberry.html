@@ -6,10 +6,10 @@
   <style>
     :root {
       --bg-main: #ffffff;
-      --card-bg: #f3f0ef; /* updated */
-      --color-1: #bdaca2; /* updated */
-      --color-2: #dac6c2; /* updated */
-      --color-3: #e8dcd6; /* updated */
+      --card-bg: #f3f0ef;
+      --color-1: #bdaca2;
+      --color-2: #dac6c2;
+      --color-3: #e8dcd6;
       --border-color: #d4c6b9;
       --text-color: #333;
     }
@@ -27,11 +27,11 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
     }
 
     .habit-rectangle {
-      background-color: var(--card-bg); /* updated */
+      background-color: var(--card-bg);
       padding: 14px;
       border-radius: 24px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
@@ -51,39 +51,51 @@
       height: 32px;
       border-radius: 8px;
       border: 1px solid rgba(0,0,0,0.06);
-      background-color: #ffffff; /* updated to start pure white */
+      background-color: #ffffff;
       box-sizing: border-box;
       cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.1s ease;
+      transition: background-color 0.2s ease,
+                  transform 0.1s ease,
+                  box-shadow 0.1s ease;
     }
 
     .habit-square:hover {
-      transform: translateY(-1px);
       box-shadow: 0 1px 3px rgba(0,0,0,0.12);
     }
 
-    .habit-square[data-state="1"] {
-      background-color: var(--color-1);
+    /* Fill colors for the 3 states */
+    .habit-square[data-state="1"] { background-color: var(--color-1); }
+    .habit-square[data-state="2"] { background-color: var(--color-2); }
+    .habit-square[data-state="3"] { background-color: var(--color-3); }
+
+    /* Option A: little pop + shadow when filled (state 1–3) */
+    .habit-square.filled {
+      transform: scale(1.05);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.16);
     }
 
-    .habit-square[data-state="2"] {
-      background-color: var(--color-2);
-    }
-
-    .habit-square[data-state="3"] {
-      background-color: var(--color-3);
-    }
-
-    .habit-controls {
-      display: flex;
-      gap: 8px;
-      justify-content: center;
+    /* Footer row with reset + counter */
+    .habit-footer {
       width: 100%;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;  /* vertical centering */
+      padding: 0 4px;
+      margin-top: 6px;
+    }
+
+    .habit-count {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--text-color);
+      font-family: Arial, sans-serif;
+      font-weight: normal;
     }
 
     .habit-button {
-      padding: 6px 14px;
-      font-size: 12px;
+      padding: 4px 12px;
+      font-size: 11px;
       border-radius: 999px;
       border: 1px solid var(--border-color);
       background-color: #fff;
@@ -92,7 +104,9 @@
       letter-spacing: 0.03em;
       text-transform: uppercase;
       font-weight: 600;
-      transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+      transition: background-color 0.15s ease,
+                  box-shadow 0.15s ease,
+                  transform 0.05s ease;
     }
 
     .habit-button:hover {
@@ -107,24 +121,38 @@
     }
   </style>
 </head>
+
 <body>
   <div class="habit-tracker">
     <div class="habit-rectangle">
+
       <div id="habitGrid" class="habit-grid"></div>
-    </div>
-    <div class="habit-controls">
-      <button id="resetButton" class="habit-button">Reset</button>
+
+      <div class="habit-footer">
+        <button id="resetButton" class="habit-button">Reset</button>
+        <div id="habitCount" class="habit-count">0/30</div>
+      </div>
+
     </div>
   </div>
 
   <script>
     const grid = document.getElementById('habitGrid');
     const resetButton = document.getElementById('resetButton');
+    const countDisplay = document.getElementById('habitCount');
 
     const TOTAL_SQUARES = 30;
-    const MAX_STATE = 3;
+    const MAX_STATE = 3; // 0 = empty, 1–3 = colored
 
-    // Create 30 squares
+    function updateCount() {
+      let filled = 0;
+      document.querySelectorAll('.habit-square').forEach(sq => {
+        if (sq.getAttribute('data-state') !== '0') filled++;
+      });
+      countDisplay.textContent = `${filled}/30`;
+    }
+
+    // Create squares
     for (let i = 0; i < TOTAL_SQUARES; i++) {
       const square = document.createElement('div');
       square.classList.add('habit-square');
@@ -132,19 +160,31 @@
 
       square.addEventListener('click', () => {
         let current = parseInt(square.getAttribute('data-state'), 10);
-        let next = (current + 1) % (MAX_STATE + 1);
+        let next = (current + 1) % (MAX_STATE + 1); // 0 → 1 → 2 → 3 → 0
+
         square.setAttribute('data-state', String(next));
+
+        if (next === 0) {
+          square.classList.remove('filled');
+        } else {
+          square.classList.add('filled');
+        }
+
+        updateCount();
       });
 
       grid.appendChild(square);
     }
 
-    // Reset all squares
     resetButton.addEventListener('click', () => {
       document.querySelectorAll('.habit-square').forEach(sq => {
         sq.setAttribute('data-state', '0');
+        sq.classList.remove('filled');
       });
+      updateCount();
     });
+
+    updateCount();
   </script>
 </body>
 </html>
