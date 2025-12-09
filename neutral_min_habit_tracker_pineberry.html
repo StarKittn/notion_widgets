@@ -67,19 +67,16 @@
     .habit-square[data-state="2"] { background-color: var(--color-2); }
     .habit-square[data-state="3"] { background-color: var(--color-3); }
 
-    /* Option A pop animation */
     .habit-square.filled {
       transform: scale(1.05);
       box-shadow: 0 2px 6px rgba(0,0,0,0.16);
     }
 
-    /* FOOTER: Matching padding left + right */
     .habit-footer {
-      width: calc(5 * 32px + 4 * 6px); /* exactly the width of the grid */
+      width: calc(5 * 32px + 4 * 6px); /* matches grid width */
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0 6px; /* equal spacing left & right */
       margin-top: 8px;
     }
 
@@ -88,6 +85,7 @@
       color: var(--text-color);
       font-family: Arial, sans-serif;
       font-weight: normal;
+      padding-right: 8px; /* pulls text in from right edge */
     }
 
     .habit-button {
@@ -149,7 +147,6 @@
       countDisplay.textContent = `${filled}/30`;
     }
 
-    // Create squares
     for (let i = 0; i < TOTAL_SQUARES; i++) {
       const square = document.createElement('div');
       square.classList.add('habit-square');
