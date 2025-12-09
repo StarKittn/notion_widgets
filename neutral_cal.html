@@ -60,7 +60,7 @@
             border-top: none;
         }
 
-        /* month text (but not year) in all caps, Arial, black */
+        /* month text ACROSS THE TOP */
         tr:first-child th span:not(.any) {
             text-transform: uppercase;
             font-family: Arial, sans-serif;
@@ -101,15 +101,17 @@
             background-color: rgba(0,0,0,0.02);
         }
 
+        /* SAT + SUN text should be black */
         td:last-child > span,
         td:nth-child(6) > span {
-            color: #f5ede9;
+            color: #000;
         }
 
+        /* CURRENT DAY highlight */
         td.avui > span {
             font-weight: bold;
             background-color: #f5ede9;
-            color: #fff;
+            color: #000; /* changed to black */
             border: 2px solid rgba(0,0,0,0.1);
         }
 
@@ -167,6 +169,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="">
         <div id="calendari"></div>
@@ -174,39 +177,15 @@
 
     <script>
         var mesos = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
+            'January','February','March','April','May','June',
+            'July','August','September','October','November','December'
         ];
 
         var dies = [
-            'Sunday',
-            'Monday',
-            'Tuesday',
-            'Wedensday',
-            'Thursday',
-            'Friday',
-            'Saturday'
+            'Sunday','Monday','Tuesday','Wedensday','Thursday','Friday','Saturday'
         ];
 
-        var dies_abr = [
-            'Su',
-            'Mo',
-            'Tu',
-            'We',
-            'Th',
-            'Fr',
-            'Sa'
-        ];
+        var dies_abr = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
         Number.prototype.pad = function(num) {
             var str = '';
@@ -229,7 +208,6 @@
             }
 
             var diff = data - new Date(original.getAttribute('data-actual'));
-
             diff = new Date(diff).getMonth();
 
             var e = document.createElement('table');
@@ -307,8 +285,10 @@
                     if (actual.getMonth() !== data.getMonth())
                         cela.className = 'fora';
 
-                    if (data.getDate() == actual.getDate() &&
-                        data.getMonth() == actual.getMonth())
+                    if (
+                        data.getDate() == actual.getDate() &&
+                        data.getMonth() == actual.getMonth()
+                    )
                         cela.className = 'avui';
 
                     actual.setDate(actual.getDate() + 1);
