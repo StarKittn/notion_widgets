@@ -13,18 +13,19 @@
       margin: 0;
     }
 
-    button::-moz-focus-inner { 
+    button::-moz-focus-inner {
       border: 0;
       padding: 0;
     }
 
-    /* Center the calendar wherever this widget is placed */
+    /* Center the calendar within whatever space it's placed in */
     #calendari {
-      position: relative;
       width: 100%;
-      height: 360px;          /* gives the absolute-positioned table space */
+      position: relative;
+      height: 360px; /* gives the absolute tables room to exist */
       display: flex;
       justify-content: center;
+      align-items: flex-start;
     }
 
     table {
@@ -34,9 +35,11 @@
       background-color: #fff;
 
       position: absolute;
-      left: 50%;
       top: 0;
-      transform: translateX(-50%); /* horizontally centered */
+
+      /* FORCE CENTERING EVEN IF OTHER CLASSES APPLY TRANSFORMS */
+      left: 50% !important;
+      transform: translateX(-50%) !important;
     }
 
     td, th {
@@ -174,7 +177,6 @@
     }
 
     function calendari(widget, data) {
-
       var original = widget.getElementsByClassName('actiu')[0];
 
       if (typeof original === 'undefined') {
